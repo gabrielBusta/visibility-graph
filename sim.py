@@ -9,6 +9,7 @@ def main():
     files = listdir(folder)
     polygons = []
 
+    '''
     for f in files:
         x, y = np.loadtxt(folder + '/' + f)
         polygon = [vg.Point(x, y) for x, y in zip(x, y)]
@@ -16,13 +17,26 @@ def main():
 
     start = vg.Point(13485.0, 57876.0)
     goal = vg.Point(12832.0, 42957.0)
+    '''
+
+    polygons = [[vg.Point(0.0,1.0), vg.Point(3.0,1.0), vg.Point(1.5,4.0)],
+                [vg.Point(4.0,4.0), vg.Point(7.0,4.0), vg.Point(5.5,8.0)]]
+
+    start = vg.Point(1.5,0.0)
+    goal = vg.Point(4.0, 6.0)
 
     g = vg.VisGraph()
     g.build(polygons)
 
     shortest = g.shortest_path(start, goal)
 
-    print g.visgraph.get_edges()
+    vis_edges = g.visgraph.get_edges()
+
+    for edge in vis_edges:
+        v = edge.p1
+        w = edge.p2
+        plt.plot([v.x, w.x], [v.y, w.y], 'r')
+
 
     for polygon in polygons:
         plot_polygon(polygon, 'b')
