@@ -8,12 +8,17 @@ from matplotlib import pyplot as plt
 def main():
     folder = 'obstacles'
     files = listdir(folder)
-    polygons = []
+    # each element of the list of obstacles is a list of vertices
+    # (e.g. points) representing a figure on the plane.
+    #
+    #     obstacle 0        obstacle 1            obstacle n
+    # [[v1, v2,..., vn], [v1, v2,..., vn],..., [v1, v2,..., vn]]
+    obstacles = []
 
     for f in files:
         x, y = np.loadtxt(folder + '/' + f)
-        polygon = [vg.Point(x, y) for x, y in zip(x, y)]
-        polygons.append(polygon)
+        vertices = [[x, y] for x, y in zip(x, y)]
+        obstacles.append(vertices)
 
     '''
     start = vg.Point(13485.0, 57876.0)
@@ -38,29 +43,29 @@ def main():
         plt.plot([v.x, w.x], [v.y, w.y], 'r')
 
     '''
-    for polygon in polygons:
-        plot_polygon(polygon, 'b')
+    for vertices in obstacles:
+        plot_segments(vertices, 'b')
 
     plt.show()
 
 
 def triangulate(vertices):
-
+    pass
 
 def plot_path(path):
     pass
 
 
-def plot_polygon(polygon, color):
-    last_i = len(polygon) - 1
+def plot_segments(vertices, color):
+    last_i = len(vertices) - 1
 
-    for i in range(len(polygon)):
-        v = polygon[i]
+    for i in range(len(vertices)):
+        v = vertices[i]
         if i == last_i:
-            w = polygon[0]
+            w = vertices[0]
         else:
-            w = polygon[i + 1]
-        plt.plot([v.x, w.x], [v.y, w.y], color + '-')
+            w = vertices[i + 1]
+        plt.plot([v[0], w[0]], [v[1], w[1]], color + '-')
 
 
 if __name__ == '__main__':
