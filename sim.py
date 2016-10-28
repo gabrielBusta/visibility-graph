@@ -25,20 +25,27 @@ def main():
         x, y = np.loadtxt(folder + '/' + f)
         vertices = list(zip(x, y))
         obstacles.append(vertices)
+
     # the polygons list contains a list of triangles
     # representing the obstacles on the plane
-    polygons = []
-    for vertices in obstacles:
+    # polygons = []
+    # for vertices in obstacles:
         # triagulate the obstacle using it's vertices
-        triangles = triangulate(vertices)
+        # triangles = triangulate(vertices)
         # triangulate returns numpy arrays. Threfore, we need to
         # convert these arrays into vg.Points before we can use
         # the visibilty graph algorithm in pyvisgraph
-        for triangle in triangles:
-            polygons.append(convert_to_vg_points(triangle))
+        # for triangle in triangles:
+            # polygons.append(convert_to_vg_points(triangle))
 
-    start = vg.Point(13485.0, 57876.0)
-    goal = vg.Point(12832.0, 42957.0)
+    # start = vg.Point(13485.0, 57876.0)
+    # goal = vg.Point(12832.0, 42957.0)
+
+    polygons = [[vg.Point(0.0,1.0), vg.Point(3.0,1.0), vg.Point(1.5,4.0), vg.Point(0.0, 4.0)],
+                [vg.Point(4.0,4.0), vg.Point(7.0,4.0), vg.Point(5.5,8.0)]]
+
+    start = vg.Point(1.5,0.0)
+    goal = vg.Point(4.0, 6.0)
 
     g = vg.VisGraph()
     g.build(polygons)
@@ -52,7 +59,7 @@ def main():
         w = edge.p2
         plt.plot([v.x, w.x], [v.y, w.y], 'r')
 
-    for vertices in obstacles:
+    for vertices in polygons:
         plot_segments(vertices, 'b')
 
     plt.show()
@@ -77,10 +84,6 @@ def convert_to_vg_points(triangle):
     return vg_triangle
 
 
-def plot_path(path):
-    pass
-
-
 def plot_segments(vertices, color):
     last_i = len(vertices) - 1
 
@@ -90,7 +93,7 @@ def plot_segments(vertices, color):
             w = vertices[0]
         else:
             w = vertices[i + 1]
-        plt.plot([v[0], w[0]], [v[1], w[1]], color + '-')
+        plt.plot([v.x, w.x], [v.y, w.y], color + '-')
 
 
 if __name__ == '__main__':
