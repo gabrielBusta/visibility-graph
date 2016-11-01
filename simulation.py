@@ -1,6 +1,7 @@
+import os
 import numpy as np
 import pyvisgraph as vg
-from os import listdir
+from scipy.spatial.distance import euclidean
 from matplotlib import pyplot as plt
 
 
@@ -8,7 +9,7 @@ def main():
     folder = 'obstacles'
 
     # load a list of the obstacle files.
-    files = listdir(folder)
+    files = os.listdir(folder)
 
     # each element of the list of obstacles is a list
     # of vertices representing a figure on the plane.
@@ -28,7 +29,7 @@ def main():
         polygons.append(vertices)
 
     # see https://github.com/TaipanRex/pyvisgraph
-    # for visibility graph source code
+    # for visibility graph and shortest path source code
     #
     # VisGraph builds the visibility graph using Der-Tsai Lee's
     # visibility graph algorithm. Lee's algorithm has
@@ -56,21 +57,38 @@ def main():
     goal = vg.Point(70597.0, 15000.0)
     shortest = g.shortest_path(start, goal)
 
-    ################
-    # PLOTING CODE #
-    ################
+    # print results to the console
+    print "The shortest path from", start, "to", goal, "is:"
+    for v in shortest:
+        print v
+
+    length = "{:.1E}".format(path_length(shortest))
+    print "The length of the shortest path is", length
+
+    # plotting code #
+
     for p in polygons:
         plot_polygon(p)
 
     for e in g.visgraph.get_edges():
-       plot_edge(e)
+        plot_edge(e)
 
     plot_path(shortest)
 
     plt.plot(start.x, start.y, 'mo')
     plt.plot(goal.x, goal.y, 'mo')
 
+    # plt.savefig('path.png')
     plt.show()
+
+
+def path_length(path):
+    length = 0
+    for i in range(len(path) - 1):
+        v = [path[i].x, path[i].y]
+        w = [path[i + 1].x, path[i + 1].y]
+        length += euclidean(v, w)
+    return length
 
 
 def plot_polygon(vertices):
